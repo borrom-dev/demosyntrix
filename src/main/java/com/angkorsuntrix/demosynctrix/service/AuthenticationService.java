@@ -14,14 +14,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class AuthenticationService {
 
-    private static final long EXPIRED_IN = TimeUnit.HOURS.toMillis(1);
-    private static SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final long EXPIRED_IN = TimeUnit.HOURS.toMillis(3);
+    private static byte[] SECRET_KEY = Base64.getDecoder().decode("570e6f300a19dd0e854547671cbd7fa8e98b5564229e7d1ba1ee9234a2ce3074"); //SecretKey
 
     public static void addToken(HttpServletResponse res, String username) throws InvalidKeyException, IOException {
         final String tokenString = Jwts.builder().setSubject(username)
