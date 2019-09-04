@@ -1,7 +1,5 @@
 package com.angkorsuntrix.demosynctrix.controller;
 
-import com.angkorsuntrix.demosynctrix.domain.Car;
-import com.angkorsuntrix.demosynctrix.repository.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
