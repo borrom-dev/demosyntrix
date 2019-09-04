@@ -1,6 +1,6 @@
 package com.angkorsuntrix.demosynctrix;
 
-import com.angkorsuntrix.demosynctrix.domain.AccountCredentials;
+import com.angkorsuntrix.demosynctrix.mapping.AccountCredentials;
 import com.angkorsuntrix.demosynctrix.service.AuthenticationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
