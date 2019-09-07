@@ -18,8 +18,7 @@ import java.util.List;
 public class PageController {
 
     @Autowired
-    private
-    PageRepository repository;
+    private PageRepository repository;
 
     @GetMapping("/pages")
     public HttpEntity getAll() {
