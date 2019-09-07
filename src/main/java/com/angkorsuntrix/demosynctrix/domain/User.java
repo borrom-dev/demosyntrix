@@ -2,7 +2,7 @@ package com.angkorsuntrix.demosynctrix.domain;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
