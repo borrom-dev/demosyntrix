@@ -1,7 +1,6 @@
 package com.angkorsuntrix.demosynctrix.controller;
 
 import com.angkorsuntrix.demosynctrix.domain.Page;
-import com.angkorsuntrix.demosynctrix.exception.ResponseException;
 import com.angkorsuntrix.demosynctrix.repository.PageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -20,9 +19,8 @@ public class PageController {
 
     @GetMapping("/pages")
     public HttpEntity getAll() {
-//        List<Page> pages = repository.getAll();
-//        return new ResponseEntity<>(pages, HttpStatus.OK);
-        return new ResponseEntity<>(new ResponseException("testing"), HttpStatus.CONFLICT);
+        List<Page> pages = repository.getAll();
+        return new ResponseEntity<>(pages, HttpStatus.OK);
     }
 
     @PostMapping("/pages")
