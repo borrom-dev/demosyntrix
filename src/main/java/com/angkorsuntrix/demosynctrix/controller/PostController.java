@@ -19,7 +19,7 @@ import java.util.List;
 public class PostController {
 
     @Autowired
-    PostRepository repository;
+    private PostRepository repository;
 
     @GetMapping("/posts")
     public HttpEntity getAll() {

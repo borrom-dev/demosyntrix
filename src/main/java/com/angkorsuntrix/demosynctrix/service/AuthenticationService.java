@@ -1,6 +1,6 @@
 package com.angkorsuntrix.demosynctrix.service;
 
-import com.angkorsuntrix.demosynctrix.mapping.Token;
+import com.angkorsuntrix.demosynctrix.mapping.AccessToken;
 import com.google.gson.Gson;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,7 +27,7 @@ public class AuthenticationService {
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRED_IN))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
-        final Token token = new Token(tokenString);
+        final AccessToken token = new AccessToken(tokenString);
         PrintWriter out = res.getWriter();
         res.setContentType("application/json");
         res.setCharacterEncoding("UTF-8");

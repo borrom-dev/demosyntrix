@@ -1,11 +1,11 @@
 package com.angkorsuntrix.demosynctrix.mapping;
 
-public class Token {
+public class AccessToken {
 
     private String token;
     private Long expired;
 
-    public Token(String token) {
+    public AccessToken(String token) {
         this.token = token;
     }
 
