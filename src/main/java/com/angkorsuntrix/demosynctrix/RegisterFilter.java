@@ -1,10 +1,15 @@
 package com.angkorsuntrix.demosynctrix;
 
 import com.angkorsuntrix.demosynctrix.domain.User;
+import com.angkorsuntrix.demosynctrix.exception.ResponseException;
+import com.angkorsuntrix.demosynctrix.exception.EntityType;
+import com.angkorsuntrix.demosynctrix.exception.ExceptionType;
 import com.angkorsuntrix.demosynctrix.repository.UserRepository;
 import com.angkorsuntrix.demosynctrix.service.AuthenticationService;
+import com.angkorsuntrix.demosynctrix.utils.WriteResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.google.gson.Gson;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +23,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collections;
 
 public class RegisterFilter extends AbstractAuthenticationProcessingFilter {
@@ -33,14 +39,19 @@ public class RegisterFilter extends AbstractAuthenticationProcessingFilter {
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
         final User cred = new ObjectMapper().readValue(request.getInputStream(), User.class);
-        final String password = cred.getPassword();
-        cred.setPassword(passwordEncoder.encode(password));
-        cred.setRole("USER");
-        repository.save(cred);
-        return getAuthenticationManager()
-                .authenticate(new UsernamePasswordAuthenticationToken(cred.getUsername(), password, Collections.emptyList()));
+        final User user = repository.findByUsername(cred.getUsername());
+        if (user == null) {
+            final String password = cred.getPassword();
+            cred.setPassword(passwordEncoder.encode(password));
+            cred.setRole("USER");
+            repository.save(cred);
+            return getAuthenticationManager()
+                    .authenticate(new UsernamePasswordAuthenticationToken(cred.getUsername(), password, Collections.emptyList()));
+        }
+        WriteResponse.writeErrorMessage(response, "user already exist!", HttpServletResponse.SC_CONFLICT);
+        return null;
     }
 
     @Override
