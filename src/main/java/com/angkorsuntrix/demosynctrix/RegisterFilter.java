@@ -1,12 +1,14 @@
 package com.angkorsuntrix.demosynctrix;
 
 import com.angkorsuntrix.demosynctrix.domain.User;
-import com.angkorsuntrix.demosynctrix.exception.BaseResponseException;
+import com.angkorsuntrix.demosynctrix.exception.ResponseException;
 import com.angkorsuntrix.demosynctrix.exception.EntityType;
 import com.angkorsuntrix.demosynctrix.exception.ExceptionType;
 import com.angkorsuntrix.demosynctrix.repository.UserRepository;
 import com.angkorsuntrix.demosynctrix.service.AuthenticationService;
+import com.angkorsuntrix.demosynctrix.utils.WriteResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,13 +17,13 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import sun.security.provider.certpath.OCSPResponse;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collections;
 
 public class RegisterFilter extends AbstractAuthenticationProcessingFilter {
@@ -37,7 +39,7 @@ public class RegisterFilter extends AbstractAuthenticationProcessingFilter {
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
         final User cred = new ObjectMapper().readValue(request.getInputStream(), User.class);
         final User user = repository.findByUsername(cred.getUsername());
         if (user == null) {
@@ -48,15 +50,12 @@ public class RegisterFilter extends AbstractAuthenticationProcessingFilter {
             return getAuthenticationManager()
                     .authenticate(new UsernamePasswordAuthenticationToken(cred.getUsername(), password, Collections.emptyList()));
         }
-        throw exception(EntityType.USER, ExceptionType.DUPLICATE_ENTITY, user.getUsername());
+        WriteResponse.writeErrorMessage(response, "user already exist!", HttpServletResponse.SC_CONFLICT);
+        return null;
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         AuthenticationService.addToken(response, authResult.getName());
-    }
-
-    private RuntimeException exception(EntityType type, ExceptionType exceptionType, String... args) {
-        return BaseResponseException.throwException(type, exceptionType, args);
     }
 }
