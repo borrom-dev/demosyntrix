@@ -1,6 +1,6 @@
 ## Spring Boot App
 
-1. Spring Rest 
+1. Basic Spring Rest 
 
 2. Basic JWT
 
