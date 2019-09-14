@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface PostRepository extends CrudRepository<Post, Long> {
-    @Query(value = "SELECT * FROM post", nativeQuery = true)
+    @Query(value = "SELECT * FROM posts", nativeQuery = true)
     List<Post> getAll();
 }

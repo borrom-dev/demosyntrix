@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface PageRepository extends CrudRepository<Page, Long> {
 
-    @Query(value = "SELECT * FROM page", nativeQuery = true)
+    @Query(value = "SELECT * FROM pages", nativeQuery = true)
     List<Page> getAll();
 }
