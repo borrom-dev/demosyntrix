@@ -28,10 +28,10 @@ public class DemoSyncTrixApplication {
             public void run(String... args) throws Exception {
                 userRepository.save(new User("user", "$2a$04$1.YhMIgNX/8TkCKGFUONWO1waedKhQ5KrnB30fl0Q01QKqmzLf.Zi", "USER"));
                 userRepository.save(new User("admin", "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", "ADMIN"));
-                pageRepository.save(new Page("/", "", 0, 0, 0, 0, "page", "home"));
-                pageRepository.save(new Page("/android", "", 0, 0, 0, 0, "page", "Android"));
-                pageRepository.save(new Page("/kotlin", "", 0, 0, 0, 0, "page", "Kotlin"));
-                pageRepository.save(new Page("/java", "", 0, 0, 0, 0, "page", "Java"));
+                pageRepository.save(new Page("/", "",   "page", "home"));
+                pageRepository.save(new Page("/android", "",     "page", "Android"));
+                pageRepository.save(new Page("/kotlin", "",  "page", "Kotlin"));
+                pageRepository.save(new Page("/java", "",  "page", "Java"));
             }
         };
     }
