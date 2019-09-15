@@ -13,23 +13,15 @@ public class Page {
     private Long id;
     private String url;
     private String content;
-    private int parentId;
-    private int ltf;
-    private int depth;
-    private int hidden;
     private String template;
     private String name;
 
     public Page() {
     }
 
-    public Page(String url, String content, int parentId, int ltf, int depth, int hidden, String template, String name) {
+    public Page(String url, String content, String template, String name) {
         this.url = url;
         this.content = content;
-        this.parentId = parentId;
-        this.ltf = ltf;
-        this.depth = depth;
-        this.hidden = hidden;
         this.template = template;
         this.name = name;
     }
@@ -56,38 +48,6 @@ public class Page {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public int getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
-    }
-
-    public int getLtf() {
-        return ltf;
-    }
-
-    public void setLtf(int ltf) {
-        this.ltf = ltf;
-    }
-
-    public int getDepth() {
-        return depth;
-    }
-
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
-    public int getHidden() {
-        return hidden;
-    }
-
-    public void setHidden(int hidden) {
-        this.hidden = hidden;
     }
 
     public String getTemplate() {

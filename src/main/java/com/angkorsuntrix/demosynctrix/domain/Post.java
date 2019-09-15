@@ -1,9 +1,8 @@
 package com.angkorsuntrix.demosynctrix.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "posts")
@@ -15,12 +14,21 @@ public class Post {
     private String title;
     private String slug;
     private String body;
+    private boolean published;
     private Date publish_at;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "page_id", nullable = false)
+    @JsonIgnore
+    private Page page;
 
-    public Post(String title, String slug, String body, Date publish_at) {
+    public Post() {
+    }
+
+    public Post(String title, String slug, String body, boolean published, Date publish_at) {
         this.title = title;
         this.slug = slug;
         this.body = body;
+        this.published = published;
         this.publish_at = publish_at;
     }
 
@@ -56,11 +64,27 @@ public class Post {
         this.body = body;
     }
 
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
+
     public Date getPublish_at() {
         return publish_at;
     }
 
     public void setPublish_at(Date publish_at) {
         this.publish_at = publish_at;
+    }
+
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
     }
 }
