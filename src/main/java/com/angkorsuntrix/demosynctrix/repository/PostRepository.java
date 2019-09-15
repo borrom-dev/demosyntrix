@@ -1,12 +1,12 @@
 package com.angkorsuntrix.demosynctrix.repository;
 
 import com.angkorsuntrix.demosynctrix.domain.Post;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+public interface PostRepository extends JpaRepository<Post, Long> {
 
-public interface PostRepository extends CrudRepository<Post, Long> {
-    @Query(value = "SELECT * FROM posts", nativeQuery = true)
-    List<Post> getAll();
+    Page<Post> findByPageId(Long topicId, Pageable pageable);
+
 }

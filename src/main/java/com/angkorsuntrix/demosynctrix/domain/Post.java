@@ -21,6 +21,9 @@ public class Post {
     @JsonIgnore
     private Page page;
 
+    public Post() {
+    }
+
     public Post(String title, String slug, String body, boolean published, Date publish_at) {
         this.title = title;
         this.slug = slug;
@@ -75,5 +78,13 @@ public class Post {
 
     public void setPublish_at(Date publish_at) {
         this.publish_at = publish_at;
+    }
+
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
     }
 }
