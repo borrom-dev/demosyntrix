@@ -1,8 +1,8 @@
 package com.angkorsuntrix.demosynctrix;
 
-import com.angkorsuntrix.demosynctrix.domain.Page;
+import com.angkorsuntrix.demosynctrix.domain.Topic;
 import com.angkorsuntrix.demosynctrix.domain.User;
-import com.angkorsuntrix.demosynctrix.repository.PageRepository;
+import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
 import com.angkorsuntrix.demosynctrix.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -15,7 +15,7 @@ public class DemoSyncTrixApplication {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private PageRepository pageRepository;
+    private TopicRepository topicRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(DemoSyncTrixApplication.class, args);
@@ -28,10 +28,10 @@ public class DemoSyncTrixApplication {
             public void run(String... args) throws Exception {
                 userRepository.save(new User("user", "$2a$04$1.YhMIgNX/8TkCKGFUONWO1waedKhQ5KrnB30fl0Q01QKqmzLf.Zi", "USER"));
                 userRepository.save(new User("admin", "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", "ADMIN"));
-                pageRepository.save(new Page("/", "",   "home", "home"));
-                pageRepository.save(new Page("/android", "",     "blog.post", "Android"));
-                pageRepository.save(new Page("/kotlin", "",  "blog.post", "Kotlin"));
-                pageRepository.save(new Page("/java", "",  "blog.post", "Java"));
+                topicRepository.save(new Topic("/", "",   "home", "home"));
+                topicRepository.save(new Topic("/android", "",     "blog.post", "Android"));
+                topicRepository.save(new Topic("/kotlin", "",  "blog.post", "Kotlin"));
+                topicRepository.save(new Topic("/java", "",  "blog.post", "Java"));
             }
         };
     }
