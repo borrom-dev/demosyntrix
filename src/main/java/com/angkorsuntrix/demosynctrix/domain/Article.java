@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name = "posts")
-public class Post {
+@Entity(name = "articles")
+public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,14 +17,14 @@ public class Post {
     private boolean published;
     private Date publish_at;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "page_id", nullable = false)
+    @JoinColumn(name = "topic_id", nullable = false)
     @JsonIgnore
-    private Page page;
+    private Topic topic;
 
-    public Post() {
+    public Article() {
     }
 
-    public Post(String title, String slug, String body, boolean published, Date publish_at) {
+    public Article(String title, String slug, String body, boolean published, Date publish_at) {
         this.title = title;
         this.slug = slug;
         this.body = body;
@@ -80,11 +80,11 @@ public class Post {
         this.publish_at = publish_at;
     }
 
-    public Page getPage() {
-        return page;
+    public Topic getTopic() {
+        return topic;
     }
 
-    public void setPage(Page page) {
-        this.page = page;
+    public void setTopic(Topic topic) {
+        this.topic = topic;
     }
 }

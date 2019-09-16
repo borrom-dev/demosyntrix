@@ -5,8 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity(name = "pages")
-public class Page {
+@Entity(name = "topics")
+public class Topic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,10 +16,10 @@ public class Page {
     private String template;
     private String name;
 
-    public Page() {
+    public Topic() {
     }
 
-    public Page(String url, String content, String template, String name) {
+    public Topic(String url, String content, String template, String name) {
         this.url = url;
         this.content = content;
         this.template = template;

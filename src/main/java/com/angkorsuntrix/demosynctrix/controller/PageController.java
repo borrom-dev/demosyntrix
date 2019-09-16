@@ -1,43 +1,44 @@
 package com.angkorsuntrix.demosynctrix.controller;
 
-import com.angkorsuntrix.demosynctrix.domain.Page;
-import com.angkorsuntrix.demosynctrix.repository.PageRepository;
+import com.angkorsuntrix.demosynctrix.domain.Topic;
+import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class PageController {
 
     @Autowired
-    private PageRepository repository;
+    private TopicRepository repository;
 
     @GetMapping("/pages")
     public HttpEntity getAll() {
-        List<Page> pages = repository.getAll();
-        return new ResponseEntity<>(pages, HttpStatus.OK);
+        final List<Topic> topics = new ArrayList<>();
+        repository.findAll().forEach(topics::add);
+        return new ResponseEntity<>(topics, HttpStatus.OK);
     }
 
     @PostMapping("/pages")
-    public HttpEntity create(@RequestBody Page page) {
-        final Page createdPage = repository.save(page);
-        return new ResponseEntity<>(createdPage, HttpStatus.OK);
+    public HttpEntity create(@RequestBody Topic topic) {
+        final Topic createdTopic = repository.save(topic);
+        return new ResponseEntity<>(createdTopic, HttpStatus.OK);
     }
 
     @PutMapping("/pages")
-    public HttpEntity update(@RequestBody Page page) {
-        final Page newPage = repository.save(page);
-        return new ResponseEntity<>(newPage, HttpStatus.OK);
+    public HttpEntity update(@RequestBody Topic topic) {
+        final Topic newTopic = repository.save(topic);
+        return new ResponseEntity<>(newTopic, HttpStatus.OK);
     }
 
     @DeleteMapping("/pages")
-    public HttpEntity delete(@RequestBody Page page) {
-        repository.delete(page);
+    public HttpEntity delete(@RequestBody Topic topic) {
+        repository.delete(topic);
         return new ResponseEntity(HttpStatus.OK);
     }
 }
