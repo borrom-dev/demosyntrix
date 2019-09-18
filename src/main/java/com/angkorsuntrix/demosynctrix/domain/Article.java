@@ -87,4 +87,10 @@ public class Article {
     public void setTopic(Topic topic) {
         this.topic = topic;
     }
+
+    public void from(Article article) {
+        this.title = article.title;
+        this.slug = article.slug;
+        this.body = article.body;
+    }
 }

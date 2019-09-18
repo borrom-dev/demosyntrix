@@ -2,20 +2,17 @@ package com.angkorsuntrix.demosynctrix.service;
 
 import com.angkorsuntrix.demosynctrix.mapping.AccessToken;
 import com.google.gson.Gson;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.InvalidKeyException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.SecurityBuilder;
 import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.Security;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
@@ -39,7 +36,7 @@ public class AuthenticationService {
         out.flush();
     }
 
-    public static Authentication getAuthentication(HttpServletRequest request) {
+    public static Authentication getAuthentication(HttpServletRequest request) throws ExpiredJwtException {
         final String token = request.getHeader("Authorization");
         if (token != null) {
             final String user = Jwts.parser()

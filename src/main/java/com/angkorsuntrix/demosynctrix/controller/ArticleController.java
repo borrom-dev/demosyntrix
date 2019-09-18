@@ -63,8 +63,14 @@ public class ArticleController {
 
     @PutMapping("/posts")
     public HttpEntity update(@RequestBody Article article) {
-        final Article newArticle = repository.save(article);
-        return new ResponseEntity<>(newArticle, HttpStatus.OK);
+        final Optional<Article> optional = repository.findById(article.getId());
+        if (optional.isPresent()) {
+            final Article updateArticle = optional.get();
+            updateArticle.from(article);
+            final Article newArticle = repository.save(updateArticle);
+            return new ResponseEntity<>(newArticle, HttpStatus.OK);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/posts")
