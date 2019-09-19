@@ -1,11 +1,16 @@
 package com.angkorsuntrix.demosynctrix.mapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pager<T> {
-    private List<T> data;
+    private List<T> data = new ArrayList<>();
     private int size;
     private int totalPage;
+
+    public Pager() {
+
+    }
 
     public Pager(List<T> data, int size, int totalPage) {
         this.data = data;

@@ -1,35 +1,38 @@
 package com.angkorsuntrix.demosynctrix.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name = "articles")
-public class Article {
+public class ArticleResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
     private String slug;
     private String body;
     private boolean published;
     private Date publish_at;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "topic_id", referencedColumnName = "id", nullable = false)
+    @JsonProperty("topic")
     private Topic topic;
 
-    public Article() {
+    public ArticleResponse(final Article article, final Topic topic) {
+        this.id = article.getId();
+        this.title = article.getTitle();
+        this.slug = article.getSlug();
+        this.body = article.getBody();
+        this.published = article.isPublished();
+        this.publish_at = article.getPublish_at();
+        this.topic = topic;
     }
 
-    public Article(String title, String slug, String body, boolean published, Date publish_at) {
+    public ArticleResponse(Long id, String title, String slug, String body, boolean published, Date publish_at, Topic topic) {
+        this.id = id;
         this.title = title;
         this.slug = slug;
         this.body = body;
         this.published = published;
         this.publish_at = publish_at;
+        this.topic = topic;
     }
 
     public Long getId() {
@@ -86,11 +89,5 @@ public class Article {
 
     public void setTopic(Topic topic) {
         this.topic = topic;
-    }
-
-    public void from(Article article) {
-        this.title = article.title;
-        this.slug = article.slug;
-        this.body = article.body;
     }
 }

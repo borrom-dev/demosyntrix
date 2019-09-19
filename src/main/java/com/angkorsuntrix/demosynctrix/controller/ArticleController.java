@@ -1,10 +1,12 @@
 package com.angkorsuntrix.demosynctrix.controller;
 
 import com.angkorsuntrix.demosynctrix.domain.Article;
+import com.angkorsuntrix.demosynctrix.domain.ArticleResponse;
 import com.angkorsuntrix.demosynctrix.domain.Topic;
 import com.angkorsuntrix.demosynctrix.mapping.Pager;
-import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
 import com.angkorsuntrix.demosynctrix.repository.ArticleRepository;
+import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
+import com.angkorsuntrix.demosynctrix.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,11 +29,13 @@ public class ArticleController {
     private ArticleRepository repository;
     @Autowired
     private TopicRepository topicRepository;
+    @Autowired
+    private ArticleService articleService;
 
     @GetMapping("/posts")
     public HttpEntity getAll(final Pageable pageable) {
-        Page<Article> page = repository.findAll(pageable);
-        return ResponseEntity.ok(new Pager<>(page.getContent(), page.getSize(), page.getTotalPages()));
+        final Pager<Article> pager =  articleService.getArticles(pageable);
+        return ResponseEntity.ok(pager);
     }
 
     @GetMapping("/posts/recent")
@@ -43,8 +47,8 @@ public class ArticleController {
 
     @GetMapping("/posts?topic={topic_id}")
     public HttpEntity getArticlesByTopic(@Param(value = "topic_id") Long id, Pageable pageable) {
-        Page<Article> page = repository.findByTopicId(id, pageable);
-        return ResponseEntity.ok(new Pager<>(page.getContent(), page.getSize(), page.getTotalPages()));
+        Pager<ArticleResponse> pager = articleService.getArticles(id, pageable);
+        return ResponseEntity.ok(pager);
     }
 
     @PostMapping("/posts/{page_id}")
