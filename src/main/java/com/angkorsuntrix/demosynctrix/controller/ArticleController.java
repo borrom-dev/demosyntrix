@@ -40,8 +40,7 @@ public class ArticleController {
 
     @GetMapping("/posts/recent")
     public HttpEntity getRecentPost() {
-        final List<Article> articles = new ArrayList<>();
-        repository.findAll().forEach(articles::add);
+        final List<Article> articles = new ArrayList<>(repository.findAll());
         return ResponseEntity.ok(articles);
     }
 
