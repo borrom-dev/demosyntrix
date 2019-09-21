@@ -1,8 +1,5 @@
 package com.angkorsuntrix.demosynctrix.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -17,7 +14,7 @@ public class Article {
     private String body;
     private boolean published;
     private Date publish_at;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "topic_id", referencedColumnName = "id", nullable = false)
     private Topic topic;
 

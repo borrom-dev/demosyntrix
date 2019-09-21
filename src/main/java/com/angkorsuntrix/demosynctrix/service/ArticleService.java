@@ -8,12 +8,10 @@ import com.angkorsuntrix.demosynctrix.repository.ArticleRepository;
 import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 @Service
 public class ArticleService {
@@ -32,12 +30,7 @@ public class ArticleService {
         final Optional<Topic> optionalTopic = topicRepository.findById(topicId);
         if (optionalTopic.isPresent()) {
             final Page<Article> articles = articleRepository.findByTopicId(topicId, pageable);
-            articles.get().forEach(new Consumer<Article>() {
-                @Override
-                public void accept(Article article) {
-                    articlePage.getData().add(new ArticleResponse(article, optionalTopic.get()));
-                }
-            });
+            articles.get().forEach(article -> articlePage.getData().add(new ArticleResponse(article, optionalTopic.get())));
             articlePage.setSize(articles.getSize());
             articlePage.setTotalPage(articles.getTotalPages());
         }
@@ -45,7 +38,7 @@ public class ArticleService {
     }
 
     public Pager<Article> getArticles(Pageable pageable) {
-        final Page<Article> articlePage =  articleRepository.findAll(pageable);
+        final Page<Article> articlePage = articleRepository.findAll(pageable);
         return new Pager<>(articlePage.getContent(), articlePage.getSize(), articlePage.getTotalPages());
     }
 }
