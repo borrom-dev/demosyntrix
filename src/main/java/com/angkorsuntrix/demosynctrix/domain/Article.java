@@ -89,5 +89,7 @@ public class Article {
         this.title = article.title;
         this.slug = article.slug;
         this.body = article.body;
+        this.published = article.published;
+        this.publish_at = article.publish_at;
     }
 }
