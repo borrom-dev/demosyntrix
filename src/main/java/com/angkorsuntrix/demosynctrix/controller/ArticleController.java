@@ -46,7 +46,7 @@ public class ArticleController {
 
     @GetMapping("/posts?topic={topic_id}")
     public HttpEntity getArticlesByTopic(@Param(value = "topic_id") Long id, Pageable pageable) {
-        Pager<ArticleResponse> pager = articleService.getArticles(id, pageable);
+        Pager<Article> pager = articleService.getArticles(id, pageable);
         return ResponseEntity.ok(pager);
     }
 

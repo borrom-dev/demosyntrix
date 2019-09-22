@@ -3,7 +3,8 @@ package com.angkorsuntrix.demosynctrix.domain;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name = "articles")
+@Entity
+@Table(name = "articles")
 public class Article extends BaseEntity {
 
     @Id

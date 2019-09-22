@@ -25,15 +25,12 @@ public class ArticleService {
         this.topicRepository = topicRepository;
     }
 
-    public Pager<ArticleResponse> getArticles(final long topicId, Pageable pageable) {
-        final Pager<ArticleResponse> articlePage = new Pager<>();
-        final Optional<Topic> optionalTopic = topicRepository.findById(topicId);
-        if (optionalTopic.isPresent()) {
+    public Pager<Article> getArticles(final long topicId, Pageable pageable) {
+        final Pager<Article> articlePage = new Pager<>();
             final Page<Article> articles = articleRepository.findByTopicId(topicId, pageable);
-            articles.get().forEach(article -> articlePage.getData().add(new ArticleResponse(article, optionalTopic.get())));
             articlePage.setSize(articles.getSize());
+            articlePage.setData(articles.getContent());
             articlePage.setTotalPage(articles.getTotalPages());
-        }
         return articlePage;
     }
 

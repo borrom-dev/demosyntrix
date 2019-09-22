@@ -28,10 +28,10 @@ public class DemoSyncTrixApplication {
             public void run(String... args) throws Exception {
                 userRepository.save(new User("user", "$2a$04$1.YhMIgNX/8TkCKGFUONWO1waedKhQ5KrnB30fl0Q01QKqmzLf.Zi", "USER"));
                 userRepository.save(new User("admin", "$2a$04$KNLUwOWHVQZVpXyMBNc7JOzbLiBjb9Tk9bP7KNcPI12ICuvzXQQKG", "ADMIN"));
-                topicRepository.save(new Topic("/", "",   "home", "home"));
-                topicRepository.save(new Topic("/android", "",     "blog.post", "Android"));
-                topicRepository.save(new Topic("/kotlin", "",  "blog.post", "Kotlin"));
-                topicRepository.save(new Topic("/java", "",  "blog.post", "Java"));
+//                topicRepository.save(new Topic("/", "",   "home", "home"));
+//                topicRepository.save(new Topic("/android", "",     "blog.post", "Android"));
+//                topicRepository.save(new Topic("/kotlin", "",  "blog.post", "Kotlin"));
+//                topicRepository.save(new Topic("/java", "",  "blog.post", "Java"));
             }
         };
     }

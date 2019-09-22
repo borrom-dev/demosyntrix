@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity(name = "topics")
+@Entity
+@Table(name = "topics")
 public class Topic extends BaseEntity {
 
     @Id
