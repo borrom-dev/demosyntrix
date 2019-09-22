@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity(name = "topics")
-public class Topic {
+public class Topic extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

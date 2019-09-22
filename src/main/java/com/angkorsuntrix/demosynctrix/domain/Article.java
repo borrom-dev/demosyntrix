@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "articles")
-public class Article {
+public class Article extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -12,8 +12,8 @@ public class Article {
     private String title;
     private String slug;
     private String body;
+    private String description;
     private boolean published;
-    private Date publish_at;
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "topic_id", referencedColumnName = "id", nullable = false)
     private Topic topic;
@@ -21,12 +21,21 @@ public class Article {
     public Article() {
     }
 
-    public Article(String title, String slug, String body, boolean published, Date publish_at) {
+    public Article(Long id, String title, String slug, String body, String description, boolean published) {
+        this.id = id;
         this.title = title;
         this.slug = slug;
         this.body = body;
+        this.description = description;
         this.published = published;
-        this.publish_at = publish_at;
+    }
+
+    public void from(Article article) {
+        this.title = article.title;
+        this.slug = article.slug;
+        this.body = article.body;
+        this.published = article.published;
+        this.topic = article.topic;
     }
 
     public Long getId() {
@@ -61,6 +70,14 @@ public class Article {
         this.body = body;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public boolean isPublished() {
         return published;
     }
@@ -69,27 +86,11 @@ public class Article {
         this.published = published;
     }
 
-    public Date getPublish_at() {
-        return publish_at;
-    }
-
-    public void setPublish_at(Date publish_at) {
-        this.publish_at = publish_at;
-    }
-
     public Topic getTopic() {
         return topic;
     }
 
     public void setTopic(Topic topic) {
         this.topic = topic;
-    }
-
-    public void from(Article article) {
-        this.title = article.title;
-        this.slug = article.slug;
-        this.body = article.body;
-        this.published = article.published;
-        this.publish_at = article.publish_at;
     }
 }
