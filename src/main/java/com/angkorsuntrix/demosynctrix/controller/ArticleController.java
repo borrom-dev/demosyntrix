@@ -66,6 +66,7 @@ public class ArticleController {
 
     @PutMapping("/posts")
     public HttpEntity update(@RequestBody Article article) {
+        final Topic topic = article.getTopic();
         final Optional<Article> optional = repository.findById(article.getId());
         if (optional.isPresent()) {
             final Article updateArticle = optional.get();

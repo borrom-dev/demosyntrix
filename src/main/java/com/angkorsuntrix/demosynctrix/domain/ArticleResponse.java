@@ -21,7 +21,6 @@ public class ArticleResponse {
         this.slug = article.getSlug();
         this.body = article.getBody();
         this.published = article.isPublished();
-        this.publish_at = article.getPublish_at();
         this.topic = topic;
     }
 
