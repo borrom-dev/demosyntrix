@@ -1,6 +1,6 @@
 package com.angkorsuntrix.demosynctrix.service;
 
-import com.angkorsuntrix.demosynctrix.mapping.AccessToken;
+import com.angkorsuntrix.demosynctrix.payload.AccessToken;
 import com.google.gson.Gson;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

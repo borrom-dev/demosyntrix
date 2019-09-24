@@ -1,42 +1,37 @@
-package com.angkorsuntrix.demosynctrix.domain;
+package com.angkorsuntrix.demosynctrix.entity;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
-@Entity
-@Table(name = "articles")
-public class Article extends BaseEntity {
+public class ArticleResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
     private String slug;
     private String body;
-    private String description;
     private boolean published;
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "topic_id", referencedColumnName = "id", nullable = false)
+    private Date publish_at;
+    @JsonProperty("topic")
     private Topic topic;
 
-    public Article() {
+    public ArticleResponse(final Article article, final Topic topic) {
+        this.id = article.getId();
+        this.title = article.getTitle();
+        this.slug = article.getSlug();
+        this.body = article.getBody();
+        this.published = article.isPublished();
+        this.topic = topic;
     }
 
-    public Article(Long id, String title, String slug, String body, String description, boolean published) {
+    public ArticleResponse(Long id, String title, String slug, String body, boolean published, Date publish_at, Topic topic) {
         this.id = id;
         this.title = title;
         this.slug = slug;
         this.body = body;
-        this.description = description;
         this.published = published;
-    }
-
-    public void from(Article article) {
-        this.title = article.title;
-        this.slug = article.slug;
-        this.body = article.body;
-        this.published = article.published;
-        this.topic = article.topic;
+        this.publish_at = publish_at;
+        this.topic = topic;
     }
 
     public Long getId() {
@@ -71,20 +66,20 @@ public class Article extends BaseEntity {
         this.body = body;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public boolean isPublished() {
         return published;
     }
 
     public void setPublished(boolean published) {
         this.published = published;
+    }
+
+    public Date getPublish_at() {
+        return publish_at;
+    }
+
+    public void setPublish_at(Date publish_at) {
+        this.publish_at = publish_at;
     }
 
     public Topic getTopic() {

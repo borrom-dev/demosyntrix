@@ -1,4 +1,4 @@
-package com.angkorsuntrix.demosynctrix.domain;
+package com.angkorsuntrix.demosynctrix.entity;
 
 import javax.persistence.*;
 

@@ -1,6 +1,6 @@
 package com.angkorsuntrix.demosynctrix.controller;
 
-import com.angkorsuntrix.demosynctrix.domain.User;
+import com.angkorsuntrix.demosynctrix.entity.User;
 import com.angkorsuntrix.demosynctrix.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;

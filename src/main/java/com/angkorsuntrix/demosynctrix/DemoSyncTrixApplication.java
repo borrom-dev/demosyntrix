@@ -1,7 +1,6 @@
 package com.angkorsuntrix.demosynctrix;
 
-import com.angkorsuntrix.demosynctrix.domain.Topic;
-import com.angkorsuntrix.demosynctrix.domain.User;
+import com.angkorsuntrix.demosynctrix.entity.User;
 import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
 import com.angkorsuntrix.demosynctrix.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

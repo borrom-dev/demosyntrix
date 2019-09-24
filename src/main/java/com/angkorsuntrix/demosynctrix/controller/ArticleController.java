@@ -1,14 +1,12 @@
 package com.angkorsuntrix.demosynctrix.controller;
 
-import com.angkorsuntrix.demosynctrix.domain.Article;
-import com.angkorsuntrix.demosynctrix.domain.ArticleResponse;
-import com.angkorsuntrix.demosynctrix.domain.Topic;
+import com.angkorsuntrix.demosynctrix.entity.Article;
+import com.angkorsuntrix.demosynctrix.entity.Topic;
 import com.angkorsuntrix.demosynctrix.mapping.Pager;
 import com.angkorsuntrix.demosynctrix.repository.ArticleRepository;
 import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
 import com.angkorsuntrix.demosynctrix.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpEntity;
