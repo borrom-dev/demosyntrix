@@ -1,9 +1,15 @@
-package com.angkorsuntrix.demosynctrix.mapping;
+package com.angkorsuntrix.demosynctrix.payload;
 
 public class AccessToken {
 
     private String token;
     private Long expired;
+    private String type = "Bearer";
+
+    public AccessToken(String token, Long expired) {
+        this.token = token;
+        this.expired = expired;
+    }
 
     public AccessToken(String token) {
         this.token = token;

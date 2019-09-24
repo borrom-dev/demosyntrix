@@ -1,8 +1,6 @@
 package com.angkorsuntrix.demosynctrix.service;
 
-import com.angkorsuntrix.demosynctrix.domain.Article;
-import com.angkorsuntrix.demosynctrix.domain.ArticleResponse;
-import com.angkorsuntrix.demosynctrix.domain.Topic;
+import com.angkorsuntrix.demosynctrix.entity.Article;
 import com.angkorsuntrix.demosynctrix.mapping.Pager;
 import com.angkorsuntrix.demosynctrix.repository.ArticleRepository;
 import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
@@ -10,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ArticleService {
@@ -25,15 +21,12 @@ public class ArticleService {
         this.topicRepository = topicRepository;
     }
 
-    public Pager<ArticleResponse> getArticles(final long topicId, Pageable pageable) {
-        final Pager<ArticleResponse> articlePage = new Pager<>();
-        final Optional<Topic> optionalTopic = topicRepository.findById(topicId);
-        if (optionalTopic.isPresent()) {
+    public Pager<Article> getArticles(final long topicId, Pageable pageable) {
+        final Pager<Article> articlePage = new Pager<>();
             final Page<Article> articles = articleRepository.findByTopicId(topicId, pageable);
-            articles.get().forEach(article -> articlePage.getData().add(new ArticleResponse(article, optionalTopic.get())));
             articlePage.setSize(articles.getSize());
+            articlePage.setData(articles.getContent());
             articlePage.setTotalPage(articles.getTotalPages());
-        }
         return articlePage;
     }
 

@@ -1,18 +1,24 @@
 package com.angkorsuntrix.demosynctrix.controller;
 
-import com.angkorsuntrix.demosynctrix.domain.Topic;
+import com.angkorsuntrix.demosynctrix.entity.Topic;
+import com.angkorsuntrix.demosynctrix.payload.ApiResponse;
+import com.angkorsuntrix.demosynctrix.payload.TopicRequest;
 import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class PageController {
+public class TopicController {
 
     @Autowired
     private TopicRepository repository;
@@ -25,9 +31,13 @@ public class PageController {
     }
 
     @PostMapping("/pages")
-    public HttpEntity create(@RequestBody Topic topic) {
-        final Topic createdTopic = repository.save(topic);
-        return new ResponseEntity<>(createdTopic, HttpStatus.OK);
+    public HttpEntity create(@Valid @RequestBody TopicRequest request) {
+        Topic topic = repository.save(new Topic(request));
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{topicId}")
+                .buildAndExpand(topic.getId()).toUri();
+        return ResponseEntity.created(location)
+                .body(new ApiResponse(true, "Topic created successfully"));
     }
 
     @PutMapping("/pages")
