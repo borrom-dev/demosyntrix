@@ -1,13 +1,26 @@
 package com.angkorsuntrix.demosynctrix.entity;
 
+import com.angkorsuntrix.demosynctrix.entity.audit.DateAudit;
+import com.angkorsuntrix.demosynctrix.payload.TopicRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
-@Table(name = "topics")
-public class Topic extends BaseEntity {
+@Table(name = "topics", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "url",
+                "name"
+        })
+})
+public class Topic extends DateAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,9 +29,19 @@ public class Topic extends BaseEntity {
     private String content;
     private String template;
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "topic")
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "topic",
+            orphanRemoval = true,
+            fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Article> articles;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @JoinTable(name = "topic_meta", joinColumns = @JoinColumn(name = "id", nullable = false))
+    @MapKeyColumn(name = "key")
+    @Column(name = "value")
+    private Map<String, String> metaMap = new HashMap<>();
 
     public Topic() {
     }
@@ -28,6 +51,17 @@ public class Topic extends BaseEntity {
         this.content = content;
         this.template = template;
         this.name = name;
+    }
+
+    public Topic(TopicRequest request) {
+        this.url = request.getUrl();
+        this.content = request.getContent();
+        this.template = request.getTemplate();
+        this.name = request.getName();
+        Map<String, String> metaMap = new HashMap<>();
+        metaMap.put("description", "Free Web tutorials");
+        metaMap.put("keywords", "HTML,CSS,XML,JavaScript");
+        this.setMetaMap(metaMap);
     }
 
     public Long getId() {
@@ -76,5 +110,13 @@ public class Topic extends BaseEntity {
 
     public void setArticles(List<Article> articles) {
         this.articles = articles;
+    }
+
+    public Map<String, String> getMetaMap() {
+        return metaMap;
+    }
+
+    public void setMetaMap(Map<String, String> metaMap) {
+        this.metaMap = metaMap;
     }
 }

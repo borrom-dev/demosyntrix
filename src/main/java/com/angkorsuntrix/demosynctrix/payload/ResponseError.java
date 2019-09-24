@@ -1,4 +1,4 @@
-package com.angkorsuntrix.demosynctrix.response;
+package com.angkorsuntrix.demosynctrix.payload;
 
 import java.util.Date;
 

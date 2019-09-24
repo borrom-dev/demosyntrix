@@ -1,40 +1,55 @@
 package com.angkorsuntrix.demosynctrix.entity;
 
-import com.angkorsuntrix.demosynctrix.exception.EntityType;
+import com.angkorsuntrix.demosynctrix.entity.audit.DateAudit;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Entity
 @Table(name = "articles")
-public class Article extends BaseEntity {
+public class Article extends DateAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @NotBlank
     @Size(min = 8, max = 100)
     private String title;
+
     @NotNull
     @Size(min = 8, max = 100)
     private String slug;
+
     @Column(columnDefinition = "text")
     private String body;
+
     @NotBlank
     @Size(min = 200)
     private String description;
+
     private boolean published;
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "topic_id", referencedColumnName = "id", nullable = false)
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Map<String, EntityType> metaMap = new HashMap<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
+
+    @ElementCollection
+    @JoinTable(name = "attribute_value_range", joinColumns = @JoinColumn(name = "id"))
+    @MapKeyColumn(name = "range_id")
+    @Column(name = "value")
+    private Map<String, String> metaMap = new HashMap<>();
 
     public Article() {
     }
@@ -110,5 +125,21 @@ public class Article extends BaseEntity {
 
     public void setTopic(Topic topic) {
         this.topic = topic;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+        public Map<String, String> getMetaMap() {
+        return metaMap;
+    }
+
+    public void setMetaMap(Map<String, String> metaMap) {
+        this.metaMap = metaMap;
     }
 }

@@ -1,4 +1,4 @@
-package com.angkorsuntrix.demosynctrix.entity;
+package com.angkorsuntrix.demosynctrix.entity.audit;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,7 +15,7 @@ import java.util.Date;
         value = {"createdAt", "updatedAt"},
         allowGetters = true
 )
-public abstract class BaseEntity implements Serializable {
+public abstract class DateAudit implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate

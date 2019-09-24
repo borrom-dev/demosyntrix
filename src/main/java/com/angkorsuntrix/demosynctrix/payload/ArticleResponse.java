@@ -1,5 +1,7 @@
-package com.angkorsuntrix.demosynctrix.entity;
+package com.angkorsuntrix.demosynctrix.payload;
 
+import com.angkorsuntrix.demosynctrix.entity.Article;
+import com.angkorsuntrix.demosynctrix.entity.Topic;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;

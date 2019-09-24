@@ -1,26 +1,56 @@
 package com.angkorsuntrix.demosynctrix.entity;
 
-import javax.persistence.*;
+import com.angkorsuntrix.demosynctrix.entity.audit.DateAudit;
+import org.hibernate.annotations.NaturalId;
 
-@Entity(name = "users")
-public class User {
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "username",
+                "email"
+        })
+})
+public class User extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, unique = true)
+
+    @NotBlank
+    @Size(max = 40)
     private String username;
-    @Column(nullable = false)
+
+    @NotBlank
+    @Size(max = 100)
     private String password;
-    @Column(nullable = false)
-    private String role;
+
+    @NaturalId
+    @NotBlank
+    @Size(max = 40)
+    @Email
+    private String email;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
-    public User(String username, String password, String role) {
+    public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.email = email;
     }
 
     public Long getId() {
@@ -47,11 +77,19 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
+    public String getEmail() {
+        return email;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
