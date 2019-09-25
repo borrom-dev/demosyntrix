@@ -1,7 +1,5 @@
 package com.angkorsuntrix.demosynctrix.payload;
 
-import org.hibernate.validator.constraints.UniqueElements;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 

@@ -14,8 +14,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
-    public final HttpEntity handleNotFoundException(ConstraintViolationException ex, WebRequest request) {
-        return ResponseEntity.badRequest().build();
+    public final HttpEntity handleNotFoundException(ConstraintViolationException e, WebRequest request) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 }
