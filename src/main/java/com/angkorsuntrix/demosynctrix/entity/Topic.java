@@ -9,6 +9,8 @@ import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +27,16 @@ public class Topic extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NotBlank
+    @Size(max = 200)
     private String url;
+    @Column(columnDefinition = "text")
     private String content;
+    @NotBlank
+    @Size(max = 100)
     private String template;
+    @NotBlank
+    @Size(max = 200)
     private String name;
     @OneToMany(
             cascade = CascadeType.ALL,
@@ -61,7 +70,16 @@ public class Topic extends DateAudit {
         Map<String, String> metaMap = new HashMap<>();
         metaMap.put("description", "Free Web tutorials");
         metaMap.put("keywords", "HTML,CSS,XML,JavaScript");
+        metaMap.put("android", "HTML,CSS,XML,JavaScript");
+        metaMap.put("kotlin", "HTML,CSS,XML,JavaScript");
         this.setMetaMap(metaMap);
+    }
+
+    public void update(TopicRequest request) {
+        this.url = request.getUrl();
+        this.template = request.getTemplate();
+        this.name = request.getName();
+        this.content = request.getContent();
     }
 
     public Long getId() {
@@ -119,4 +137,5 @@ public class Topic extends DateAudit {
     public void setMetaMap(Map<String, String> metaMap) {
         this.metaMap = metaMap;
     }
+
 }

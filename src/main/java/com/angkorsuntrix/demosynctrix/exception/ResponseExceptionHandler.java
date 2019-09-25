@@ -15,7 +15,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     public final HttpEntity handleNotFoundException(ConstraintViolationException e, WebRequest request) {
-        return ResponseEntity.badRequest().body(e.getConstraintName());
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 }

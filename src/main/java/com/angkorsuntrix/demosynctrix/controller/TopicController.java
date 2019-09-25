@@ -1,6 +1,7 @@
 package com.angkorsuntrix.demosynctrix.controller;
 
 import com.angkorsuntrix.demosynctrix.entity.Topic;
+import com.angkorsuntrix.demosynctrix.exception.ResourceNotFoundException;
 import com.angkorsuntrix.demosynctrix.payload.ApiResponse;
 import com.angkorsuntrix.demosynctrix.payload.TopicRequest;
 import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -40,15 +40,20 @@ public class TopicController {
                 .body(new ApiResponse(true, "Topic created successfully"));
     }
 
-    @PutMapping("/pages")
-    public HttpEntity update(@RequestBody Topic topic) {
-        final Topic newTopic = repository.save(topic);
-        return new ResponseEntity<>(newTopic, HttpStatus.OK);
+    @PutMapping("/pages/{topic_id}")
+    public HttpEntity update(@PathVariable("topic_id") Long topicId, @Valid @RequestBody TopicRequest request) {
+        return repository.findById(topicId).map(topic -> {
+            topic.update(request);
+            Topic newTopic = repository.save(topic);
+            return new ResponseEntity<>(newTopic, HttpStatus.OK);
+        }).orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: " + topicId));
     }
 
-    @DeleteMapping("/pages")
-    public HttpEntity delete(@RequestBody Topic topic) {
-        repository.delete(topic);
-        return new ResponseEntity(HttpStatus.OK);
+    @DeleteMapping("/pages/{topic_id}")
+    public HttpEntity delete(@PathVariable("topic_id") Long id) {
+        return repository.findById(id).map(topic -> {
+            repository.delete(topic);
+            return  ResponseEntity.ok().build();
+        }).orElseThrow(() -> new  ResourceNotFoundException("Topic not found with id: " + id));
     }
 }
