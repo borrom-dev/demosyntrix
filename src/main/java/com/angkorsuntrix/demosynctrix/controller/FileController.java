@@ -39,6 +39,7 @@ public class FileController {
         return new UploadFileResponse(filename, fileDownloadUri, file.getContentType(), file.getSize());
     }
 
+    @PostMapping("/upload_files")
     public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
         return Arrays.stream(files)
                 .map(this::uploadFile)
