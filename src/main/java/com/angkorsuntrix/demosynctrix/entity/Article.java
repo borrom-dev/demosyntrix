@@ -1,6 +1,8 @@
 package com.angkorsuntrix.demosynctrix.entity;
 
-import com.angkorsuntrix.demosynctrix.entity.audit.DateAudit;
+import com.angkorsuntrix.demosynctrix.entity.audit.UserAudit;
+import com.angkorsuntrix.demosynctrix.payload.ArticleRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -13,7 +15,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "articles")
-public class Article extends DateAudit {
+public class Article extends UserAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,21 +33,23 @@ public class Article extends DateAudit {
     private String body;
 
     @NotBlank
-    @Size(min = 200)
+    @Size(max = 500)
     private String description;
 
     private boolean published;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "topic_id", nullable = false)
+    @JsonIgnore
     private Topic topic;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private User user;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @JoinTable(name = "attribute_value_range", joinColumns = @JoinColumn(name = "id"))
     @MapKeyColumn(name = "range_id")
     @Column(name = "value")
@@ -61,6 +65,15 @@ public class Article extends DateAudit {
         this.body = body;
         this.description = description;
         this.published = published;
+    }
+
+    public Article(User user, ArticleRequest request) {
+        this.title = request.getTitle();
+        this.slug = request.getSlug();
+        this.body = request.getBody();
+        this.description = request.getDescription();
+        this.topic = request.getTopic();
+        this.user = user;
     }
 
     public void from(Article article) {
@@ -135,11 +148,21 @@ public class Article extends DateAudit {
         this.user = user;
     }
 
-        public Map<String, String> getMetaMap() {
+    public Map<String, String> getMetaMap() {
         return metaMap;
     }
 
     public void setMetaMap(Map<String, String> metaMap) {
         this.metaMap = metaMap;
+    }
+
+    public void update(User user, ArticleRequest request) {
+        this.user = user;
+        this.topic = request.getTopic();
+        this.title = request.getTitle();
+        this.slug = request.getSlug();
+        this.body = request.getBody();
+        this.description = request.getDescription();
+        this.metaMap = request.getMetaMap();
     }
 }

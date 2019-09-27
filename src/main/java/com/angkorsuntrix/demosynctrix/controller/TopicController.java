@@ -44,8 +44,8 @@ public class TopicController {
     public HttpEntity update(@PathVariable("topic_id") Long topicId, @Valid @RequestBody TopicRequest request) {
         return repository.findById(topicId).map(topic -> {
             topic.update(request);
-            Topic newTopic = repository.save(topic);
-            return new ResponseEntity<>(newTopic, HttpStatus.OK);
+            final Topic newTopic = repository.save(topic);
+            return ResponseEntity.ok(newTopic);
         }).orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: " + topicId));
     }
 
@@ -53,7 +53,7 @@ public class TopicController {
     public HttpEntity delete(@PathVariable("topic_id") Long id) {
         return repository.findById(id).map(topic -> {
             repository.delete(topic);
-            return  ResponseEntity.ok().build();
-        }).orElseThrow(() -> new  ResourceNotFoundException("Topic not found with id: " + id));
+            return ResponseEntity.ok().build();
+        }).orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: " + id));
     }
 }

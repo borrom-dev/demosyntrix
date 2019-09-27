@@ -2,82 +2,93 @@ package com.angkorsuntrix.demosynctrix.controller;
 
 import com.angkorsuntrix.demosynctrix.entity.Article;
 import com.angkorsuntrix.demosynctrix.entity.Topic;
+import com.angkorsuntrix.demosynctrix.entity.User;
+import com.angkorsuntrix.demosynctrix.exception.ResourceNotFoundException;
 import com.angkorsuntrix.demosynctrix.mapping.Pager;
+import com.angkorsuntrix.demosynctrix.payload.ApiResponse;
+import com.angkorsuntrix.demosynctrix.payload.ArticleRequest;
 import com.angkorsuntrix.demosynctrix.repository.ArticleRepository;
 import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
+import com.angkorsuntrix.demosynctrix.repository.UserRepository;
+import com.angkorsuntrix.demosynctrix.security.CurrentUser;
+import com.angkorsuntrix.demosynctrix.security.UserPrincipal;
 import com.angkorsuntrix.demosynctrix.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 @RestController
 public class ArticleController {
 
     @Autowired
-    private ArticleRepository repository;
+    private ArticleRepository articleRepository;
     @Autowired
     private TopicRepository topicRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private ArticleService articleService;
 
-    @GetMapping("/posts")
+    @GetMapping("/articles")
     public HttpEntity getAll(final Pageable pageable) {
-        final Pager<Article> pager =  articleService.getArticles(pageable);
+        final Pager<Article> pager = articleService.getArticles(pageable);
         return ResponseEntity.ok(pager);
     }
 
     @GetMapping("/posts/recent")
     public HttpEntity getRecentPost() {
-        final List<Article> articles = new ArrayList<>(repository.findAll());
+        final List<Article> articles = new ArrayList<>(articleRepository.findAll());
         return ResponseEntity.ok(articles);
     }
 
-    @GetMapping("/posts?topic={topic_id}")
-    public HttpEntity getArticlesByTopic(@Param(value = "topic_id") Long id, Pageable pageable) {
+    @GetMapping("/articles/{topic_id}")
+    public HttpEntity getArticlesByTopic(@PathVariable(value = "topic_id") Long id, Pageable pageable) {
         Pager<Article> pager = articleService.getArticles(id, pageable);
         return ResponseEntity.ok(pager);
     }
 
-    @PostMapping("/posts/{page_id}")
-    public HttpEntity create(@PathVariable(value = "page_id") long pageId, @RequestBody @Valid Article article) {
-        final Optional<Article> value = topicRepository.findById(pageId).flatMap((Function<Topic, Optional<Article>>) topic -> {
-            article.setTopic(topic);
-            final Article value1 = repository.save(article);
-            return Optional.of(value1);
-        });
-        if (value.isPresent()) {
-            return ResponseEntity.ok(value.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PostMapping("/articles/{topic_id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public HttpEntity create(@CurrentUser UserPrincipal currentUser, @PathVariable(value = "topic_id") long topicId, @Valid @RequestBody ArticleRequest request) {
+        User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User not found: " + currentUser.getId()));
+        return topicRepository.findById(topicId)
+                .map(topic -> {
+                    request.setTopic(topic);
+                    Article article = articleRepository.save(new Article(user, request));
+                    URI location = ServletUriComponentsBuilder
+                            .fromCurrentRequest().path("/{articleId}")
+                            .buildAndExpand(article.getId()).toUri();
+                    return ResponseEntity.created(location)
+                            .body(new ApiResponse(true, "Article created successfully"));
+                }).orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: " + topicId));
     }
 
-    @PutMapping("/posts")
-    public HttpEntity update(@RequestBody Article article) {
-        final Topic topic = article.getTopic();
-        final Optional<Article> optional = repository.findById(article.getId());
-        if (optional.isPresent()) {
-            final Article updateArticle = optional.get();
-            updateArticle.from(article);
-            final Article newArticle = repository.save(updateArticle);
-            return new ResponseEntity<>(newArticle, HttpStatus.OK);
-        }
-        return ResponseEntity.notFound().build();
+    @PutMapping("/articles/{topic_id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public HttpEntity update(@CurrentUser UserPrincipal currentUser, @PathVariable(value = "topic_id") Long topicId, @Valid @RequestBody ArticleRequest request) {
+        User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User not found: " + currentUser.getId()));
+        Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: " + topicId));
+        return articleRepository.findById(request.getId()).map(article -> {
+            request.setTopic(topic);
+            article.update(user, request);
+            Article newArticle = articleRepository.save(article);
+            return ResponseEntity.ok(newArticle);
+        }).orElseThrow(() -> new ResourceNotFoundException("Article not found with id: " + request.getId()));
     }
 
     @DeleteMapping("/posts")
     public HttpEntity delete(@RequestBody Article article) {
-        repository.delete(article);
+        articleRepository.delete(article);
         return new ResponseEntity(HttpStatus.OK);
     }
 }
