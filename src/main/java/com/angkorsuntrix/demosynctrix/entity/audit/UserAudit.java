@@ -8,7 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class UserAudit extends DateUtils {
+public abstract class UserAudit extends DateAudit {
 
     @CreatedBy
     @JsonProperty("create_by")

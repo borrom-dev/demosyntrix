@@ -1,6 +1,5 @@
 package com.angkorsuntrix.demosynctrix.config;
 
-import com.angkorsuntrix.demosynctrix.repository.UserRepository;
 import com.angkorsuntrix.demosynctrix.security.JwtAuthenticationEntryPoint;
 import com.angkorsuntrix.demosynctrix.security.JwtAuthenticationFilter;
 import com.angkorsuntrix.demosynctrix.service.UserDetailsServiceImpl;
