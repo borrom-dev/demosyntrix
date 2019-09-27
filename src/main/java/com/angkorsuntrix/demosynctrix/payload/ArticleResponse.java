@@ -2,7 +2,7 @@ package com.angkorsuntrix.demosynctrix.payload;
 
 import com.angkorsuntrix.demosynctrix.entity.Article;
 import com.angkorsuntrix.demosynctrix.entity.Topic;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Date;
 
@@ -14,7 +14,7 @@ public class ArticleResponse {
     private String body;
     private boolean published;
     private Date publish_at;
-    @JsonProperty("topic")
+    @JsonIgnore
     private Topic topic;
 
     public ArticleResponse(final Article article, final Topic topic) {

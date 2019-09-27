@@ -14,6 +14,7 @@ import com.angkorsuntrix.demosynctrix.security.CurrentUser;
 import com.angkorsuntrix.demosynctrix.security.UserPrincipal;
 import com.angkorsuntrix.demosynctrix.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -24,8 +25,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 public class ArticleController {
@@ -36,25 +35,22 @@ public class ArticleController {
     private TopicRepository topicRepository;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private ArticleService articleService;
 
     @GetMapping("/articles")
     public HttpEntity getAll(final Pageable pageable) {
-        final Pager<Article> pager = articleService.getArticles(pageable);
-        return ResponseEntity.ok(pager);
+        final Page<Article> articlePage = articleRepository.findAll(pageable);
+        return ResponseEntity.ok(new Pager<>(articlePage.getContent(), articlePage.getSize(), articlePage.getTotalPages()));
     }
 
-    @GetMapping("/posts/recent")
+    @GetMapping("/articles/recent")
     public HttpEntity getRecentPost() {
-        final List<Article> articles = new ArrayList<>(articleRepository.findAll());
-        return ResponseEntity.ok(articles);
+        return ResponseEntity.ok(articleRepository.findAll());
     }
 
     @GetMapping("/articles/{topic_id}")
-    public HttpEntity getArticlesByTopic(@PathVariable(value = "topic_id") Long id, Pageable pageable) {
-        Pager<Article> pager = articleService.getArticles(id, pageable);
-        return ResponseEntity.ok(pager);
+    public HttpEntity getArticlesByTopic(@PathVariable(value = "topic_id") Long topicId, Pageable pageable) {
+        final Page<Article> articles = articleRepository.findByTopicId(topicId, pageable);
+        return ResponseEntity.ok(new Pager<>(articles.getContent(), articles.getSize(), articles.getTotalPages()));
     }
 
     @PostMapping("/articles/{topic_id}")
