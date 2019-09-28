@@ -1,6 +1,7 @@
 package com.angkorsuntrix.demosynctrix.payload;
 
 import com.angkorsuntrix.demosynctrix.entity.Topic;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -25,6 +26,7 @@ public class ArticleRequest {
     @Size(max = 500)
     private String description;
 
+    @JsonIgnore
     private Topic topic;
 
     private Map<String, String> metaMap = new HashMap<>();
