@@ -38,9 +38,8 @@ public class Article extends UserAudit {
 
     private boolean published;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "topic_id", nullable = false)
-    @JsonIgnore
     private Topic topic;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

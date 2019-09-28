@@ -15,7 +15,9 @@ import com.angkorsuntrix.demosynctrix.security.CurrentUser;
 import com.angkorsuntrix.demosynctrix.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +27,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class ArticleController {
@@ -40,8 +40,10 @@ public class ArticleController {
 
     @GetMapping("/articles/id/{id}")
     public HttpEntity getAll(@PathVariable(value = "id") Long id) {
-        return articleRepository.findById(id).map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+        return articleRepository.findById(id).map(article -> {
+          final ArticleResponse response = new ArticleResponse(article);
+          return ResponseEntity.ok(response);
+        }).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
     }
 
     @GetMapping("/articles")
@@ -52,9 +54,9 @@ public class ArticleController {
 
     @GetMapping("/articles/recent")
     public HttpEntity getRecentPost() {
-        List<ArticleResponse> responses = articleRepository.findAll().stream()
-                .map(ArticleResponse::new).collect(Collectors.toList());
-        return ResponseEntity.ok(responses);
+        final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createBy");
+        final Page<ArticleResponse> responses = articleRepository.findAll(pageable).map(ArticleResponse::new);
+        return ResponseEntity.ok(new Pager<>(responses.getContent(), responses.getSize(), responses.getTotalPages()));
     }
 
     @GetMapping("/articles/{topic_id}")

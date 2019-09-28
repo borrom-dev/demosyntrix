@@ -1,6 +1,5 @@
 package com.angkorsuntrix.demosynctrix.entity.audit;
 
-import com.angkorsuntrix.demosynctrix.utils.DateUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;

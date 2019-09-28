@@ -13,6 +13,7 @@ public class ArticleResponse {
     private Long id;
     private String title;
     private String slug;
+    private String description;
     private String body;
     private boolean published;
     @JsonFormat(pattern="dd MMMM yyyy")
@@ -21,15 +22,19 @@ public class ArticleResponse {
     @JsonFormat(pattern="dd MMMM yyyy")
     @JsonProperty("update_at")
     private Date updateAt;
+    @JsonProperty("topic_id")
+    private long topicId;
 
     public ArticleResponse(final Article article) {
         this.id = article.getId();
         this.title = article.getTitle();
         this.slug = article.getSlug();
+        this.description = article.getDescription();
         this.body = article.getBody();
         this.published = article.isPublished();
         this.createAt = article.getCreatedAt();
         this.updateAt = article.getUpdatedAt();
+        this.topicId = article.getTopic().getId();
     }
 
     public ArticleResponse(Long id, String title, String slug, String body, boolean published) {
@@ -64,6 +69,14 @@ public class ArticleResponse {
         this.slug = slug;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getBody() {
         return body;
     }
@@ -78,5 +91,29 @@ public class ArticleResponse {
 
     public void setPublished(boolean published) {
         this.published = published;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public Date getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
+    }
+
+    public long getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(long topicId) {
+        this.topicId = topicId;
     }
 }
