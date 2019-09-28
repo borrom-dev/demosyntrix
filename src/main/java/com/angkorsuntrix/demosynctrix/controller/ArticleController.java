@@ -7,12 +7,12 @@ import com.angkorsuntrix.demosynctrix.exception.ResourceNotFoundException;
 import com.angkorsuntrix.demosynctrix.mapping.Pager;
 import com.angkorsuntrix.demosynctrix.payload.ApiResponse;
 import com.angkorsuntrix.demosynctrix.payload.ArticleRequest;
+import com.angkorsuntrix.demosynctrix.payload.ArticleResponse;
 import com.angkorsuntrix.demosynctrix.repository.ArticleRepository;
 import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
 import com.angkorsuntrix.demosynctrix.repository.UserRepository;
 import com.angkorsuntrix.demosynctrix.security.CurrentUser;
 import com.angkorsuntrix.demosynctrix.security.UserPrincipal;
-import com.angkorsuntrix.demosynctrix.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +25,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class ArticleController {
@@ -36,27 +38,35 @@ public class ArticleController {
     @Autowired
     private UserRepository userRepository;
 
+    @GetMapping("/articles/id/{id}")
+    public HttpEntity getAll(@PathVariable(value = "id") Long id) {
+        return articleRepository.findById(id).map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+    }
+
     @GetMapping("/articles")
     public HttpEntity getAll(final Pageable pageable) {
-        final Page<Article> articlePage = articleRepository.findAll(pageable);
+        final Page<ArticleResponse> articlePage = articleRepository.findAll(pageable).map(ArticleResponse::new);
         return ResponseEntity.ok(new Pager<>(articlePage.getContent(), articlePage.getSize(), articlePage.getTotalPages()));
     }
 
     @GetMapping("/articles/recent")
     public HttpEntity getRecentPost() {
-        return ResponseEntity.ok(articleRepository.findAll());
+        List<ArticleResponse> responses = articleRepository.findAll().stream()
+                .map(ArticleResponse::new).collect(Collectors.toList());
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/articles/{topic_id}")
     public HttpEntity getArticlesByTopic(@PathVariable(value = "topic_id") Long topicId, Pageable pageable) {
-        final Page<Article> articles = articleRepository.findByTopicId(topicId, pageable);
+        final Page<ArticleResponse> articles = articleRepository.findByTopicId(topicId, pageable).map(ArticleResponse::new);
         return ResponseEntity.ok(new Pager<>(articles.getContent(), articles.getSize(), articles.getTotalPages()));
     }
 
     @PostMapping("/articles/{topic_id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public HttpEntity create(@CurrentUser UserPrincipal currentUser, @PathVariable(value = "topic_id") long topicId, @Valid @RequestBody ArticleRequest request) {
-        User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User not found: " + currentUser.getId()));
+        final User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User not found: " + currentUser.getId()));
         return topicRepository.findById(topicId)
                 .map(topic -> {
                     request.setTopic(topic);
@@ -72,12 +82,12 @@ public class ArticleController {
     @PutMapping("/articles/{topic_id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public HttpEntity update(@CurrentUser UserPrincipal currentUser, @PathVariable(value = "topic_id") Long topicId, @Valid @RequestBody ArticleRequest request) {
-        User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User not found: " + currentUser.getId()));
-        Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: " + topicId));
+        final User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User not found: " + currentUser.getId()));
+        final Topic topic = topicRepository.findById(topicId).orElseThrow(() -> new ResourceNotFoundException("Topic not found with id: " + topicId));
         return articleRepository.findById(request.getId()).map(article -> {
             request.setTopic(topic);
             article.update(user, request);
-            Article newArticle = articleRepository.save(article);
+            final Article newArticle = articleRepository.save(article);
             return ResponseEntity.ok(newArticle);
         }).orElseThrow(() -> new ResourceNotFoundException("Article not found with id: " + request.getId()));
     }

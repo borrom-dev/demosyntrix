@@ -2,7 +2,9 @@ package com.angkorsuntrix.demosynctrix.payload;
 
 import com.angkorsuntrix.demosynctrix.entity.Article;
 import com.angkorsuntrix.demosynctrix.entity.Topic;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
@@ -13,27 +15,29 @@ public class ArticleResponse {
     private String slug;
     private String body;
     private boolean published;
-    private Date publish_at;
-    @JsonIgnore
-    private Topic topic;
+    @JsonFormat(pattern="dd MMMM yyyy")
+    @JsonProperty("create_at")
+    private Date createAt;
+    @JsonFormat(pattern="dd MMMM yyyy")
+    @JsonProperty("update_at")
+    private Date updateAt;
 
-    public ArticleResponse(final Article article, final Topic topic) {
+    public ArticleResponse(final Article article) {
         this.id = article.getId();
         this.title = article.getTitle();
         this.slug = article.getSlug();
         this.body = article.getBody();
         this.published = article.isPublished();
-        this.topic = topic;
+        this.createAt = article.getCreatedAt();
+        this.updateAt = article.getUpdatedAt();
     }
 
-    public ArticleResponse(Long id, String title, String slug, String body, boolean published, Date publish_at, Topic topic) {
+    public ArticleResponse(Long id, String title, String slug, String body, boolean published) {
         this.id = id;
         this.title = title;
         this.slug = slug;
         this.body = body;
         this.published = published;
-        this.publish_at = publish_at;
-        this.topic = topic;
     }
 
     public Long getId() {
@@ -74,21 +78,5 @@ public class ArticleResponse {
 
     public void setPublished(boolean published) {
         this.published = published;
-    }
-
-    public Date getPublish_at() {
-        return publish_at;
-    }
-
-    public void setPublish_at(Date publish_at) {
-        this.publish_at = publish_at;
-    }
-
-    public Topic getTopic() {
-        return topic;
-    }
-
-    public void setTopic(Topic topic) {
-        this.topic = topic;
     }
 }
