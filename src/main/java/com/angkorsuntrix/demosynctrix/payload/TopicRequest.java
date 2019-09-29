@@ -12,6 +12,7 @@ public class TopicRequest {
     @NotBlank
     @Size(max = 100)
     private String template;
+    private long position;
     @NotBlank
     @Size(max = 50)
     private String name;
@@ -38,6 +39,14 @@ public class TopicRequest {
 
     public void setTemplate(String template) {
         this.template = template;
+    }
+
+    public long getPosition() {
+        return position;
+    }
+
+    public void setPosition(long position) {
+        this.position = position;
     }
 
     public String getName() {
