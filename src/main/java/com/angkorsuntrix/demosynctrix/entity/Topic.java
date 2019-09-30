@@ -3,11 +3,9 @@ package com.angkorsuntrix.demosynctrix.entity;
 import com.angkorsuntrix.demosynctrix.entity.audit.DateAudit;
 import com.angkorsuntrix.demosynctrix.payload.TopicRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.HashMap;
@@ -35,6 +33,7 @@ public class Topic extends DateAudit {
     @Size(max = 100)
     private String template;
     private long position;
+    private boolean status;
     @NotBlank
     @Size(max = 200)
     private String name;
@@ -55,24 +54,14 @@ public class Topic extends DateAudit {
     public Topic() {
     }
 
-    public Topic(String url, String content, String template, String name) {
-        this.url = url;
-        this.content = content;
-        this.template = template;
-        this.name = name;
-    }
-
     public Topic(TopicRequest request) {
         this.url = request.getUrl();
         this.content = request.getContent();
         this.template = request.getTemplate();
         this.name = request.getName();
-        Map<String, String> metaMap = new HashMap<>();
-        metaMap.put("description", "Free Web tutorials");
-        metaMap.put("keywords", "HTML,CSS,XML,JavaScript");
-        metaMap.put("android", "HTML,CSS,XML,JavaScript");
-        metaMap.put("kotlin", "HTML,CSS,XML,JavaScript");
-        this.setMetaMap(metaMap);
+        this.position = request.getPosition();
+        this.metaMap = request.getMetaMap();
+        this.status = request.isStatus();
     }
 
     public void update(TopicRequest request) {
@@ -81,6 +70,8 @@ public class Topic extends DateAudit {
         this.name = request.getName();
         this.content = request.getContent();
         this.position = request.getPosition();
+        this.status = request.isStatus();
+        this.metaMap = request.getMetaMap();
     }
 
     public Long getId() {
@@ -121,6 +112,14 @@ public class Topic extends DateAudit {
 
     public void setPosition(long position) {
         this.position = position;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public String getName() {
