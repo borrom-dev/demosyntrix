@@ -3,7 +3,6 @@ package com.angkorsuntrix.demosynctrix.entity;
 import com.angkorsuntrix.demosynctrix.entity.audit.DateAudit;
 import com.angkorsuntrix.demosynctrix.payload.TopicRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.*;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
@@ -35,6 +34,7 @@ public class Topic extends DateAudit {
     @NotBlank
     @Size(max = 100)
     private String template;
+    private long position;
     @NotBlank
     @Size(max = 200)
     private String name;
@@ -80,6 +80,7 @@ public class Topic extends DateAudit {
         this.template = request.getTemplate();
         this.name = request.getName();
         this.content = request.getContent();
+        this.position = request.getPosition();
     }
 
     public Long getId() {
@@ -112,6 +113,14 @@ public class Topic extends DateAudit {
 
     public void setTemplate(String template) {
         this.template = template;
+    }
+
+    public long getPosition() {
+        return position;
+    }
+
+    public void setPosition(long position) {
+        this.position = position;
     }
 
     public String getName() {

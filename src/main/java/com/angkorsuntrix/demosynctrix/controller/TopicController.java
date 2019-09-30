@@ -6,15 +6,14 @@ import com.angkorsuntrix.demosynctrix.payload.ApiResponse;
 import com.angkorsuntrix.demosynctrix.payload.TopicRequest;
 import com.angkorsuntrix.demosynctrix.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,9 +24,15 @@ public class TopicController {
 
     @GetMapping("/topics")
     public HttpEntity getAll() {
-        final List<Topic> topics = new ArrayList<>();
-        repository.findAll().forEach(topics::add);
-        return new ResponseEntity<>(topics, HttpStatus.OK);
+        final List<Topic> topics = repository.findAll(new Sort(Sort.Direction.ASC, "position"));
+        return ResponseEntity.ok(topics);
+    }
+
+    @GetMapping("/topics/{topic_id}")
+    public HttpEntity getTopicById(@PathVariable("topic_id") Long topicId) {
+        return repository.findById(topicId)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot topic id"));
     }
 
     @PostMapping("/topics")

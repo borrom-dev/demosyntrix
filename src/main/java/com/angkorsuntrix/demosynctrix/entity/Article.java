@@ -14,7 +14,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Entity
-@Table(name = "articles")
+@Table(name = "articles", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "title",
+                "slug"
+        })
+})
 public class Article extends UserAudit {
 
     @Id
@@ -33,7 +38,7 @@ public class Article extends UserAudit {
     private String body;
 
     @NotBlank
-    @Size(max = 500)
+    @Size(min = 200)
     private String description;
 
     private boolean published;

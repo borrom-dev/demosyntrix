@@ -1,6 +1,7 @@
 package com.angkorsuntrix.demosynctrix.entity;
 
 import com.angkorsuntrix.demosynctrix.entity.audit.DateAudit;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ public class User extends DateAudit {
 
     @NotBlank
     @Size(max = 100)
+    @JsonIgnore
     private String password;
 
     @NaturalId
@@ -42,6 +44,7 @@ public class User extends DateAudit {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
     public User() {
