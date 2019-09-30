@@ -15,6 +15,7 @@ public class TopicRequest {
     @Size(max = 100)
     private String template;
     private long position;
+    private boolean status;
     @NotBlank
     @Size(max = 50)
     private String name;
@@ -51,6 +52,14 @@ public class TopicRequest {
 
     public void setPosition(long position) {
         this.position = position;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public String getName() {

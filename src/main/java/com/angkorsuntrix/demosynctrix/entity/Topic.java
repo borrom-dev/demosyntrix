@@ -3,6 +3,7 @@ package com.angkorsuntrix.demosynctrix.entity;
 import com.angkorsuntrix.demosynctrix.entity.audit.DateAudit;
 import com.angkorsuntrix.demosynctrix.payload.TopicRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -32,6 +33,7 @@ public class Topic extends DateAudit {
     @Size(max = 100)
     private String template;
     private long position;
+    private boolean status;
     @NotBlank
     @Size(max = 200)
     private String name;
@@ -59,6 +61,7 @@ public class Topic extends DateAudit {
         this.name = request.getName();
         this.position = request.getPosition();
         this.metaMap = request.getMetaMap();
+        this.status = request.isStatus();
     }
 
     public void update(TopicRequest request) {
@@ -67,6 +70,7 @@ public class Topic extends DateAudit {
         this.name = request.getName();
         this.content = request.getContent();
         this.position = request.getPosition();
+        this.status = request.isStatus();
         this.metaMap = request.getMetaMap();
     }
 
@@ -108,6 +112,14 @@ public class Topic extends DateAudit {
 
     public void setPosition(long position) {
         this.position = position;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public String getName() {
