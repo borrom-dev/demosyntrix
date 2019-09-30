@@ -28,6 +28,13 @@ public class TopicController {
         return ResponseEntity.ok(topics);
     }
 
+    @GetMapping("/topics/{topic_id}")
+    public HttpEntity getTopicById(@PathVariable("topic_id") Long topicId) {
+        return repository.findById(topicId)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot topic id"));
+    }
+
     @PostMapping("/topics")
     public HttpEntity create(@Valid @RequestBody TopicRequest request) {
         Topic topic = repository.save(new Topic(request));
