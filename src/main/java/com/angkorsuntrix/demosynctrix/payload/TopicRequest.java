@@ -2,6 +2,8 @@ package com.angkorsuntrix.demosynctrix.payload;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TopicRequest {
     @NotBlank
@@ -16,6 +18,8 @@ public class TopicRequest {
     @NotBlank
     @Size(max = 50)
     private String name;
+
+    private Map<String, String> metaMap = new HashMap<>();
 
     public String getUrl() {
         return url;
@@ -55,5 +59,13 @@ public class TopicRequest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Map<String, String> getMetaMap() {
+        return metaMap;
+    }
+
+    public void setMetaMap(Map<String, String> metaMap) {
+        this.metaMap = metaMap;
     }
 }
