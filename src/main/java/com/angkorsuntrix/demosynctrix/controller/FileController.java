@@ -1,6 +1,8 @@
 package com.angkorsuntrix.demosynctrix.controller;
 
 import com.angkorsuntrix.demosynctrix.payload.UploadFileResponse;
+import com.angkorsuntrix.demosynctrix.security.CurrentUser;
+import com.angkorsuntrix.demosynctrix.security.UserPrincipal;
 import com.angkorsuntrix.demosynctrix.service.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +31,8 @@ public class FileController {
     private FileStorageService fileStorageService;
 
     @PostMapping("/upload_file")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        String filename = fileStorageService.storeFile(file);
+    public UploadFileResponse uploadFile(@CurrentUser UserPrincipal currentUser, @RequestParam("file") MultipartFile file) {
+        String filename = fileStorageService.storeFile(currentUser.getId(), file);
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/download_file/")
                 .path(filename)
@@ -40,9 +42,9 @@ public class FileController {
     }
 
     @PostMapping("/upload_files")
-    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+    public List<UploadFileResponse> uploadMultipleFiles(@CurrentUser UserPrincipal currentUser, @RequestParam("files") MultipartFile[] files) {
         return Arrays.stream(files)
-                .map(this::uploadFile)
+                .map(file -> uploadFile(currentUser, file))
                 .collect(Collectors.toList());
     }
 
@@ -63,5 +65,11 @@ public class FileController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+    }
+
+    @GetMapping("/files")
+    public HttpEntity getFiles(@CurrentUser UserPrincipal currentUser) {
+        List<String> resources = fileStorageService.loadFilesResource(currentUser.getId());
+        return ResponseEntity.ok(resources);
     }
 }
