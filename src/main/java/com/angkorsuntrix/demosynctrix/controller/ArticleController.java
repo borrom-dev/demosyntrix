@@ -41,9 +41,18 @@ public class ArticleController {
     @GetMapping("/articles/id/{id}")
     public HttpEntity getAll(@PathVariable(value = "id") Long id) {
         return articleRepository.findById(id).map(article -> {
-          final ArticleResponse response = new ArticleResponse(article);
-          return ResponseEntity.ok(response);
+            final ArticleResponse response = new ArticleResponse(article);
+            return ResponseEntity.ok(response);
         }).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+    }
+
+
+    @GetMapping("/articles/published/{id}")
+    public HttpEntity getAllByPublished(@PathVariable(value = "id") Long id, final Pageable pageable) {
+        final Page<ArticleResponse> articlePage = articleRepository
+                .findByTopicIdAndPublished(id, true, pageable)
+                .map(ArticleResponse::new);
+        return ResponseEntity.ok(new Pager<>(articlePage.getContent(), articlePage.getSize(), articlePage.getTotalPages()));
     }
 
     @GetMapping("/articles")
@@ -56,6 +65,13 @@ public class ArticleController {
     public HttpEntity getRecentPost() {
         final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createBy");
         final Page<ArticleResponse> responses = articleRepository.findAll(pageable).map(ArticleResponse::new);
+        return ResponseEntity.ok(new Pager<>(responses.getContent(), responses.getSize(), responses.getTotalPages()));
+    }
+
+    @GetMapping("/articles/published_recent")
+    public HttpEntity getHomeArticles() {
+        final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createBy");
+        final Page<ArticleResponse> responses = articleRepository.findByPublished(true, pageable).map(ArticleResponse::new);
         return ResponseEntity.ok(new Pager<>(responses.getContent(), responses.getSize(), responses.getTotalPages()));
     }
 
@@ -90,7 +106,7 @@ public class ArticleController {
             request.setTopic(topic);
             article.update(user, request);
             final Article newArticle = articleRepository.save(article);
-            return ResponseEntity.ok(newArticle);
+            return ResponseEntity.ok(new ArticleResponse(newArticle));
         }).orElseThrow(() -> new ResourceNotFoundException("Article not found with id: " + request.getId()));
     }
 

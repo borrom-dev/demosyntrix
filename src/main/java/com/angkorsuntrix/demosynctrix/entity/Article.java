@@ -38,7 +38,7 @@ public class Article extends UserAudit {
     private String body;
 
     @NotBlank
-    @Size(min = 200)
+    @Column(columnDefinition = "text")
     private String description;
 
     private boolean published;
@@ -167,6 +167,7 @@ public class Article extends UserAudit {
         this.slug = request.getSlug();
         this.body = request.getBody();
         this.description = request.getDescription();
+        this.published = request.isPublished();
         this.metaMap = request.getMetaMap();
     }
 }

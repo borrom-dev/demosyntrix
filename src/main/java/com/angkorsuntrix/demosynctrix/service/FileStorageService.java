@@ -72,11 +72,12 @@ public class FileStorageService {
     }
 
     public List<String> loadFilesResource(long userId) {
+        final String userPath = "/"+ userId + "/";
         final Path filesPath = this.fileStorageLocation.resolve(String.valueOf(userId)).normalize();
         try {
             return Files.walk(filesPath)
                     .filter(Files::isRegularFile)
-                    .map(path -> this.fileStorageLocation.toString().concat(path.getFileName().toString()))
+                    .map(path -> this.fileStorageLocation.toString().concat(userPath).concat(path.getFileName().toString()))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             return new ArrayList<>();
