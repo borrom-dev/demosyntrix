@@ -27,8 +27,7 @@ public class FileStorageService {
 
     @Autowired
     public FileStorageService(FileStorageProperties properties) {
-        fileStorageLocation = Paths.get(properties.getUploadDir())
-                .toAbsolutePath().normalize();
+        fileStorageLocation = Paths.get(properties.getUploadDir()).toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception e) {
@@ -37,8 +36,7 @@ public class FileStorageService {
     }
 
     public String storeFile(long userId, MultipartFile file) {
-
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        final String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         try {
             if (fileName.contains("..")) {
                 throw new FileStorageException("Sorry! filename contain invalid path");
@@ -62,7 +60,7 @@ public class FileStorageService {
     public Resource loadFileAsResource(String fileName) {
         try {
             final Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
+            final Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
                 return resource;
             } else {
@@ -78,7 +76,7 @@ public class FileStorageService {
         try {
             return Files.walk(filesPath)
                     .filter(Files::isRegularFile)
-                    .map(path -> path.getFileName().toString())
+                    .map(path -> this.fileStorageLocation.toString().concat(path.getFileName().toString()))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             return new ArrayList<>();
