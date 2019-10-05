@@ -28,6 +28,13 @@ public class TopicController {
         return ResponseEntity.ok(topics);
     }
 
+
+    @GetMapping("/topics/active")
+    public HttpEntity getActiveTopics() {
+        final List<Topic> topics = repository.findByStatus(true, new Sort(Sort.Direction.ASC, "position"));
+        return ResponseEntity.ok(topics);
+    }
+
     @GetMapping("/topics/{topic_id}")
     public HttpEntity getTopicById(@PathVariable("topic_id") Long topicId) {
         return repository.findById(topicId)
