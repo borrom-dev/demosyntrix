@@ -22,9 +22,9 @@ public class ArticleRequest {
 
     private String body;
 
-    @NotBlank
-    @Size(max = 500)
     private String description;
+
+    private boolean isPublished;
 
     @JsonIgnore
     private Topic topic;
@@ -69,6 +69,14 @@ public class ArticleRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isPublished() {
+        return isPublished;
+    }
+
+    public void setPublished(boolean published) {
+        isPublished = published;
     }
 
     public Topic getTopic() {

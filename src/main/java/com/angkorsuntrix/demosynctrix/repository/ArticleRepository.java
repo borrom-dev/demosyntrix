@@ -11,4 +11,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     Page<Article> findByTopicId(Long topicId, Pageable pageable);
 
+    Page<Article> findByTopicIdAndPublished(Long topicId, boolean published, Pageable pageable);
+
 }
