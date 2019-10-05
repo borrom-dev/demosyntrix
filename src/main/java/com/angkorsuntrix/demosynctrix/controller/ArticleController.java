@@ -68,6 +68,13 @@ public class ArticleController {
         return ResponseEntity.ok(new Pager<>(responses.getContent(), responses.getSize(), responses.getTotalPages()));
     }
 
+    @GetMapping("/articles/published_recent")
+    public HttpEntity getHomeArticles() {
+        final Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "createBy");
+        final Page<ArticleResponse> responses = articleRepository.findByPublished(true, pageable).map(ArticleResponse::new);
+        return ResponseEntity.ok(new Pager<>(responses.getContent(), responses.getSize(), responses.getTotalPages()));
+    }
+
     @GetMapping("/articles/{topic_id}")
     public HttpEntity getArticlesByTopic(@PathVariable(value = "topic_id") Long topicId, Pageable pageable) {
         final Page<ArticleResponse> articles = articleRepository.findByTopicId(topicId, pageable).map(ArticleResponse::new);
