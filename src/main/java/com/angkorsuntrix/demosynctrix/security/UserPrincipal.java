@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class UserPrincipal implements UserDetails {
 
-    private Long id;
+    private Long id; // if your id is not nullable then better use premitive long
     private String username;
     @JsonIgnore
     private String email;
@@ -21,7 +21,7 @@ public class UserPrincipal implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(Long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(Long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) { // should be private then
         this.id = id;
         this.username = username;
         this.email = email;

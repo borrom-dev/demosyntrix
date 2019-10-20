@@ -29,6 +29,7 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
+// IF your logic is typical crud.. u might consider go ahead and use https://spring.io/projects/spring-data-rest
 public class ArticleController {
 
     @Autowired
@@ -39,11 +40,15 @@ public class ArticleController {
     private UserRepository userRepository;
 
     @GetMapping("/articles/id/{id}")
-    public HttpEntity getAll(@PathVariable(value = "id") Long id) {
+    public HttpEntity getAll(@PathVariable(value = "id") Long id) { // why do you need HttpEntity here ? change return type to ArticleResponse
+
+        /**
+         *   return articleRepository.findById(id).map(ArticleResponse::new).map(ResponseEntity::ok).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+         */
         return articleRepository.findById(id).map(article -> {
             final ArticleResponse response = new ArticleResponse(article);
             return ResponseEntity.ok(response);
-        }).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+        }).orElseThrow(() -> new ResourceNotFoundException("Article not found")); // provide id inside of exception
     }
 
 
@@ -83,6 +88,7 @@ public class ArticleController {
 
     @PostMapping("/articles/{topic_id}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    // better make @CurrentUser to inject User instead of do it every time manually in every controller
     public HttpEntity create(@CurrentUser UserPrincipal currentUser, @PathVariable(value = "topic_id") long topicId, @Valid @RequestBody ArticleRequest request) {
         final User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User not found: " + currentUser.getId()));
         return topicRepository.findById(topicId)
@@ -110,6 +116,7 @@ public class ArticleController {
         }).orElseThrow(() -> new ResourceNotFoundException("Article not found with id: " + request.getId()));
     }
 
+    // no @PreAUthorize ? :)
     @DeleteMapping("/posts")
     public HttpEntity delete(@RequestBody Article article) {
         articleRepository.delete(article);

@@ -21,8 +21,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    // i personally prefer constructor injections
+    // https://www.vojtechruzicka.com/field-dependency-injection-considered-harmful/
+
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsService; // better not to inject classes, rather use interfaces (UserDetailsService in this case)
 
     @Autowired
     private JwtAuthenticationEntryPoint unAuthorizedHandler;
@@ -40,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
+        return super.authenticationManager(); // what's the poins of overriding then ?
     }
 
     @Override
@@ -54,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors()
                 .and()
                 .csrf()
-                .disable()
+                .disable() // if you create web do not disable csrf especially together with csrf (alloweOrigin: *)
                 .exceptionHandling()
                 .authenticationEntryPoint(unAuthorizedHandler)
                 .and()
