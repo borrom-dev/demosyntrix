@@ -31,5 +31,16 @@ class SpringSecurityAuditAwareImpl implements AuditorAware<Long> {
         }
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         return Optional.ofNullable(principal.getId());
+
+        // could consider to use this style
+        /**
+         *        return  Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+         *                 .filter(Authentication::isAuthenticated)
+         *                 .filter(auth -> !(auth instanceof AnonymousAuthenticationToken))
+         *                 .map(Authentication::getPrincipal)
+         *                 .filter(UserPrincipal.class::isInstance)
+         *                 .map(UserPrincipal.class::cast)
+         *                 .map(UserPrincipal::getId);
+         */
     }
 }

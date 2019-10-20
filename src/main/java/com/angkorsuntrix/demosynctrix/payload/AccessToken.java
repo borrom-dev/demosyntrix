@@ -11,6 +11,8 @@ public class AccessToken {
         this.expired = expired;
     }
 
+    // consider use project lombok to avoid boilerplate (it will generate all the getters/setters for you)
+
     public AccessToken(String token) {
         this.token = token;
     }
